@@ -9,6 +9,11 @@ CurrentGraspPoint = 0
 
 # mouse callback function to draw the circle when the mouse is clicked
 def draw_circle(event,x,y,flags,params):
+
+    """
+    draw a circle when the mouse is clicked.
+    """
+
     global CurrentGraspPoint
     p = params[0]
     if event == cv.EVENT_LBUTTONDOWN:
@@ -20,7 +25,7 @@ def draw_circle(event,x,y,flags,params):
 def get_grasp_locations(template_image):
 
     """
-    get the grasping points of the object using the mouse clicked points
+    get the grasping points of the object using the mouse clicked points.
     """
 
     # list to keep the mouse clicked points
