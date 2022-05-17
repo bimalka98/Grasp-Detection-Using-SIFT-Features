@@ -1,4 +1,3 @@
-from tokenize import Number
 import cv2 as cv
 import numpy as np
 
@@ -47,13 +46,12 @@ def get_grasp_locations(template_image):
     # set the mouse callback function
     cv.setMouseCallback('Template Image', draw_circle, params)
 
-    # get mouse clicked points
-    print('Click the grasp points of the object')
+    # get mouse clicked points    
     while(1):
         cv.imshow('Template Image', template_image)
         if CurrentGraspPoint == NumberOfGraspPoints:            
             # wait for 2 seconds
-            cv.waitKey(2000)
+            cv.waitKey(1000)
 
             # break the loop
             break
