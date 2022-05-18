@@ -21,7 +21,10 @@ def main(object_class):
 
     # get the homography matrix
     if len(object_points) >= 4:
+        
+        print("Finding the homography matrix...")
 
+        # find the homography matrix        
         homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
         print("Homography Matrix : \n", homography_matrix)
 
@@ -29,14 +32,45 @@ def main(object_class):
         transformed_grasp_locations = get_transformed_grasp_locations(grasp_locations, homography_matrix)
         print("Transformed Grasp Locations : \n", transformed_grasp_locations)
 
+        # # draw the transformed grasp locations on the scene image
+        # for loacation in transformed_grasp_locations:
+        #     cv.circle(scene_image, (int(loacation[0]), int(loacation[1])), 5, (0, 0, 255), -1)
+
+        # get the mid point of the transformed grasp locations
+        mid_point = get_midpoint(transformed_grasp_locations)
+
+        # draw the mid point on the scene image
+        cv.circle(scene_image, (int(mid_point[0]), int(mid_point[1])), 5, (0, 0, 255), -1)        
+        
+        # display the scene image
+        cv.imshow('Scene Image - Mid Point of grasp locations', scene_image)
+        cv.waitKey(0)
+
+        # use centroid of the scene image as the grasp location
+        centroid = get_centroid(scene_image)
+        print("Centroid of the template image : ", centroid)
+
+        # draw the centroid on the scene image
+        cv.circle(scene_image, (int(centroid[0]), int(centroid[1])), 5, (0, 0, 255), -1)
+
+        # display the scene image
+        cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
+        cv.waitKey(0)
+        
     else:
+
         print("Not enough matching keypoints to calculate homography matrix.")
 
-        # use centroid of the template image as the grasp location
-        # print("Centroid of the template image : ", get_centroid(template_image))
+        # use centroid of the scene image as the grasp location
+        centroid = get_centroid(scene_image)
+        print("Centroid of the template image : ", centroid)
 
+        # draw the centroid on the scene image
+        cv.circle(scene_image, (int(centroid[0]), int(centroid[1])), 5, (0, 0, 255), -1)
 
-
+        # display the scene image
+        cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
+        cv.waitKey(0)
 
 
 

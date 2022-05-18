@@ -13,6 +13,10 @@ def get_matching_keypoints(template_image, scene_image):
     template = cv.cvtColor(template_image.copy(), cv.COLOR_BGR2GRAY)
     scene = cv.cvtColor(scene_image.copy(), cv.COLOR_BGR2GRAY)
 
+    # gaussian blur the images
+    template = cv.GaussianBlur(template, (5, 5), 0)
+    scene = cv.GaussianBlur(scene, (5, 5), 0)
+
     # detect features using SIFT and compute the descriptors
     sift = cv.SIFT_create()
     kp1, des1 = sift.detectAndCompute(template, None)
@@ -26,7 +30,7 @@ def get_matching_keypoints(template_image, scene_image):
     matches = flann.knnMatch(des1, des2, k = 2)
 
     # filter matches using the Lowe's ratio test
-    ratio_thresh = 0.9
+    ratio_thresh = 0.8
     good_matches = []
     for m,n in matches:
         if m.distance < ratio_thresh * n.distance:
