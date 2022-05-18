@@ -30,9 +30,9 @@ def main(object_class):
         print("Transformed Grasp Locations : \n", transformed_grasp_locations)
 
         # display the transformed grasp locations on the scene image
-        for location in transformed_grasp_locations:
+        for i, location in enumerate(transformed_grasp_locations):
             cv.circle(scene_image, (int(location[0]), int(location[1])), 5, (0, 255, 0), -1)
-            cv.putText(scene_image, "TGL", (int(location[0]), int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv.putText(scene_image, "TGL " + str(i), (int(location[0]), int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # get the mid point of the transformed grasp locations
         mid_point = get_midpoint(transformed_grasp_locations)
