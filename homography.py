@@ -37,6 +37,10 @@ def get_matching_keypoints(template_image, scene_image):
         if m.distance < ratio_thresh * n.distance:
             good_matches.append(m)
     
+    # print(good_matches)
+    # sort the matches based on the distance
+    good_matches = sorted(good_matches, key = lambda x:x.distance)
+
     # draw the good matches
     img_matches = cv.drawMatches(template, kp1, scene, kp2, good_matches, None, flags = 2)
 

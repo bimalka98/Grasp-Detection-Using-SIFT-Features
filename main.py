@@ -21,8 +21,11 @@ def main(object_class):
         
         print("Finding the homography matrix...")
 
-        # find the homography matrix        
-        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
+        # find the homography matrix: https://docs.opencv.org/4.x/d1/de0/tutorial_py_feature_homography.html 
+        # cv.findHomography https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780    
+        # homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
+        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RHO)
+        # homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.LMEDS)
         print("Homography Matrix : \n", homography_matrix)
 
         # get the transformed grasp locations on the scene image
