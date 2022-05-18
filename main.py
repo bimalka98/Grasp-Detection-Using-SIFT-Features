@@ -20,11 +20,20 @@ def main(object_class):
     object_points, scene_points = get_matching_keypoints(template_image, scene_image)
 
     # get the homography matrix
-    homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
-    print("Homography Matrix : \n", homography_matrix)
+    if len(object_points) >= 4:
 
-    # get the transformed grasp locations on the scene image
+        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
+        print("Homography Matrix : \n", homography_matrix)
 
+        # get the transformed grasp locations on the scene image
+        transformed_grasp_locations = get_transformed_grasp_locations(grasp_locations, homography_matrix)
+        print("Transformed Grasp Locations : \n", transformed_grasp_locations)
+
+    else:
+        print("Not enough matching keypoints to calculate homography matrix.")
+
+        # use centroid of the template image as the grasp location
+        # print("Centroid of the template image : ", get_centroid(template_image))
 
 
 

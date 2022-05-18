@@ -63,3 +63,6 @@ def get_grasp_locations(template_image):
     # return the list of mouse clicked points
     return grasp_locations
 
+
+
+    

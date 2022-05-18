@@ -47,3 +47,29 @@ def get_matching_keypoints(template_image, scene_image):
         scene_points[i, :] = kp2[match.trainIdx].pt
 
     return object_points, scene_points
+
+
+def get_transformed_grasp_locations(grasp_locations, homography_matrix):
+
+    """
+    get the transformed grasp locations on the scene image.
+    """
+
+    # make grasp_locations a numpy array
+    grasp_locations = np.array(grasp_locations)
+    # print(grasp_locations)
+
+    # add a column of ones to grasp_locations to make it homogeneous
+    grasp_locations = np.concatenate((grasp_locations, np.ones((grasp_locations.shape[0], 1))), axis=1)
+
+    # transform the grasp_locations using the homography matrix
+    transformed_grasp_locations = np.matmul(homography_matrix, grasp_locations.T) 
+    # print(transformed_grasp_locations)
+
+    # divide the transformed_grasp_locations by the last column to get the final grasp locations
+    transformed_grasp_locations = transformed_grasp_locations / transformed_grasp_locations[-1, :]
+
+    # return the final grasp locations
+    transformed_grasp_locations = transformed_grasp_locations[:-1, :].T
+    
+    return transformed_grasp_locations
