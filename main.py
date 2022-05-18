@@ -32,14 +32,14 @@ def main(object_class):
         # display the transformed grasp locations on the scene image
         for i, location in enumerate(transformed_grasp_locations):
             cv.circle(scene_image, (int(location[0]), int(location[1])), 5, (0, 255, 0), -1)
-            cv.putText(scene_image, "TGL " + str(i), (int(location[0]), int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            # cv.putText(scene_image, "TGL" + str(i), (int(location[0]), int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # get the mid point of the transformed grasp locations
         mid_point = get_midpoint(transformed_grasp_locations)
 
         # draw the mid point on the scene image
         cv.circle(scene_image, (int(mid_point[0]), int(mid_point[1])), 5, (0, 0, 255), -1)
-        cv.putText(scene_image, "Mid Point", (int(mid_point[0]), int(mid_point[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        # cv.putText(scene_image, "Mid Point", (int(mid_point[0]), int(mid_point[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         
         # display the scene image
         cv.imshow('Scene Image - Mid Point of grasp locations', scene_image)
@@ -55,7 +55,7 @@ def main(object_class):
 
         # draw the centroid on the scene image
         cv.circle(scene_image, (int(centroid[0]), int(centroid[1])), 5, (0, 0, 255), -1)
-        cv.putText(scene_image, "Centroid", (int(centroid[0]), int(centroid[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        # cv.putText(scene_image, "Centroid", (int(centroid[0]), int(centroid[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
         # display the scene image
         cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
