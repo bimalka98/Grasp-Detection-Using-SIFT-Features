@@ -13,9 +13,6 @@ def main(object_class):
     # get the grasping location from the user as mouse clicked points
     grasp_locations = get_grasp_locations(template_image)
 
-    # print the mouse clicked points
-    print(grasp_locations)
-
     # get matching keypoints from the template and scene images
     object_points, scene_points = get_matching_keypoints(template_image, scene_image)
 
@@ -32,9 +29,9 @@ def main(object_class):
         transformed_grasp_locations = get_transformed_grasp_locations(grasp_locations, homography_matrix)
         print("Transformed Grasp Locations : \n", transformed_grasp_locations)
 
-        # # draw the transformed grasp locations on the scene image
-        # for loacation in transformed_grasp_locations:
-        #     cv.circle(scene_image, (int(loacation[0]), int(loacation[1])), 5, (0, 0, 255), -1)
+        # display the transformed grasp locations on the scene image
+        for location in transformed_grasp_locations:
+            cv.circle(scene_image, (int(location[0]), int(location[1])), 5, (0, 255, 0), -1)
 
         # get the mid point of the transformed grasp locations
         mid_point = get_midpoint(transformed_grasp_locations)
@@ -44,17 +41,6 @@ def main(object_class):
         
         # display the scene image
         cv.imshow('Scene Image - Mid Point of grasp locations', scene_image)
-        cv.waitKey(0)
-
-        # use centroid of the scene image as the grasp location
-        centroid = get_centroid(scene_image)
-        print("Centroid of the template image : ", centroid)
-
-        # draw the centroid on the scene image
-        cv.circle(scene_image, (int(centroid[0]), int(centroid[1])), 5, (0, 0, 255), -1)
-
-        # display the scene image
-        cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
         cv.waitKey(0)
         
     else:
@@ -78,6 +64,9 @@ if __name__ == '__main__':
 
     # print the opencv version
     print("OpenCV version : ", cv.__version__)
+
+    # print the numpy version
+    print("Numpy version : ", np.__version__)
 
     # execute the main fucntion     
     main(input("Enter the object class : ").strip())

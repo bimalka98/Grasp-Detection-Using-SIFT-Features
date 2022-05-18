@@ -30,7 +30,7 @@ def get_matching_keypoints(template_image, scene_image):
     matches = flann.knnMatch(des1, des2, k = 2)
 
     # filter matches using the Lowe's ratio test
-    ratio_thresh = 0.8
+    ratio_thresh = 0.9
     good_matches = []
     for m,n in matches:
         if m.distance < ratio_thresh * n.distance:
