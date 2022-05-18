@@ -18,7 +18,8 @@ def get_matching_keypoints(template_image, scene_image):
     scene = cv.GaussianBlur(scene, (5, 5), 0)
 
     # detect features using SIFT and compute the descriptors
-    sift = cv.SIFT_create()
+    numof_features = 1000
+    sift = cv.SIFT_create(numof_features)
     kp1, des1 = sift.detectAndCompute(template, None)
     kp2, des2 = sift.detectAndCompute(scene, None)
 
