@@ -75,7 +75,7 @@ def get_centroid(scene_image):
     template = cv.cvtColor(scene_image.copy(), cv.COLOR_BGR2GRAY)
 
     # gausian blur the image
-    template = cv.GaussianBlur(template, (5, 5), 0)
+    template = cv.GaussianBlur(template, (3, 3), 0)
 
     # otsu's thresholding
     ret, thresh = cv.threshold(template, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)
