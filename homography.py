@@ -55,8 +55,78 @@ def get_matching_keypoints(template_image, scene_image):
         object_points[i, :] = kp1[match.queryIdx].pt
         scene_points[i, :] = kp2[match.trainIdx].pt
 
+    print("Number of matches: ", len(good_matches))
     return object_points, scene_points
 
+def remove_mismatches(object_points, scene_points):
+
+    """
+    RANSAC algorithms can be improved using the following two methods
+    presented in the paper: 
+
+    "SIFT Feature Point Matching Based on Improved RANSAC Algorithm"
+    by Guangjun Shi, Xiangyang Xu, Yaping Dai
+
+    1. Method One: Find the target area and remove the
+feature points not in the target area.
+
+    2. Method Two: Remove the crossing feature points: 
+    this can not be used here as the images may be roatated
+    in extreme degrees.
+    """
+
+    # Method 1:
+#     It is supposed that feature point A(x, y) is one of the
+# matching feature points. Calculate the number of matching
+# feature points in the rectangular region whose center
+# is (x, y) , width is “a” and height is “b” (“a” and “b” are set
+# by us). If the number less than the threshold value, A(x, y)
+# is supposed the isolated point not in the target area. Then
+# remove A(x, y) . Examine each of the matching points.
+
+    correct_matches = 0
+    filtered_object_points = []
+    filtered_scene_points = []
+
+    # set the threshold value
+    threshold = 4 # number of matching neighbors around the point of interest
+
+    # set the width and height of the target area
+    width = 60 # width of the target area in pixels
+    height = 60 # height of the target area in pixels
+
+    # iterate through the object points
+    for i in range(len(object_points)):
+
+        object_point = object_points[i]
+        scene_point = scene_points[i]
+
+        # calculate the number of matching neighbors around the point of interest
+        num_neighbors = 0
+        for neighbor in object_points:
+            delta_x = abs(neighbor[0] - object_point[0])
+            delta_y = abs(neighbor[1] - object_point[1])
+
+            # if the neighbor is in the target area
+            if delta_x < width/2 and delta_y < height/2:
+                num_neighbors += 1
+            
+        # if the number of matching neighbors is less than the threshold value,
+        # the point is not in the target area
+        if num_neighbors >= threshold:
+            correct_matches += 1
+            filtered_object_points.append(object_point)
+            filtered_scene_points.append(scene_point)
+
+    # convert the filtered points to numpy arrays
+    filtered_object_points2 = np.zeros((correct_matches, 2), dtype = np.float32)
+    filtered_scene_points2 = np.zeros((correct_matches, 2), dtype = np.float32)
+    for i in range(correct_matches):
+        filtered_object_points2[i, :] = filtered_object_points[i]
+        filtered_scene_points2[i, :] = filtered_scene_points[i]
+    
+    print("Number of correct matches: ", correct_matches)
+    return filtered_object_points2, filtered_scene_points2
 
 def get_transformed_grasp_locations(grasp_locations, homography_matrix):
 
