@@ -16,17 +16,14 @@ def main(object_class):
     # get matching keypoints from the template and scene images
     object_points, scene_points = get_matching_keypoints(template_image, scene_image)
 
-    # remove mismatching points
-    filtered_object_points, filtered_scene_points = remove_mismatches(object_points, scene_points)
-
     # get the homography matrix
-    if len(filtered_object_points) >= 4:
+    if len(object_points) >= 4:
         
         print("Finding the homography matrix...")
 
         # find the homography matrix: https://docs.opencv.org/4.x/d1/de0/tutorial_py_feature_homography.html 
         # cv.findHomography https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780    
-        homography_matrix, _ = cv.findHomography(filtered_object_points, filtered_scene_points, cv.RANSAC)
+        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
         # homography_matrix, _ = cv.findHomography(filtered_object_points, filtered_scene_points, cv.RHO)
         # homography_matrix, _ = cv.findHomography(filtered_object_points, filtered_scene_points, cv.LMEDS)
         print("Homography Matrix : \n", homography_matrix)
@@ -38,7 +35,7 @@ def main(object_class):
         # display the transformed grasp locations on the scene image
         for i, location in enumerate(transformed_grasp_locations):
             cv.circle(scene_image, (int(location[0]), int(location[1])), 5, (0, 255, 0), -1)
-            # cv.putText(scene_image, "TGL" + str(i), (int(location[0]), int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            # cv.putText(scene_image, "H" + str(i), (int(location[0])+2, int(location[1])), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # get the mid point of the transformed grasp locations
         mid_point = get_midpoint(transformed_grasp_locations)
@@ -61,7 +58,7 @@ def main(object_class):
 
         # draw the centroid on the scene image
         cv.circle(scene_image, (int(centroid[0]), int(centroid[1])), 5, (0, 0, 255), -1)
-        # cv.putText(scene_image, "Centroid", (int(centroid[0]), int(centroid[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        cv.putText(scene_image, "C", (int(centroid[0])+2, int(centroid[1])), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
         # display the scene image
         cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
