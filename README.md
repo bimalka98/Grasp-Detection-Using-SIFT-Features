@@ -21,3 +21,11 @@ Transformed Grasp Locations :
 ```
 
 <img src="figures/RANSAC.png" width="700" />
+
+## Improve performance of the RANSAC
+
+Using the method 1 explained in the following paper:
+
+ * ***SIFT Feature Point Matching Based on Improved RANSAC Algorithm*** by Guangjun Shi, Xiangyang Xu, Yaping Dai
+
+Method 2 explained in the paper is not implemented in this code. Because it is not possible to use the method 2 in our scenario where images may be rotated by a large angle. Therefore, cross points are a natural thing in our case.
