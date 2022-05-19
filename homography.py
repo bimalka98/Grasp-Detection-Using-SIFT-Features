@@ -1,7 +1,7 @@
-from turtle import width
 import cv2 as cv
 import numpy as np
 
+# fucntion to get the matching feature points
 def get_matching_keypoints(template_image, scene_image):
     
     """    
@@ -36,8 +36,9 @@ def get_matching_keypoints(template_image, scene_image):
     for m,n in matches:
         if m.distance < ratio_thresh * n.distance:
             good_matches.append(m)
-    
+
     print("Number of matches:", len(good_matches))
+
     # sort the matches based on the distance
     good_matches = sorted(good_matches, key = lambda x:x.distance)
 
@@ -49,21 +50,30 @@ def get_matching_keypoints(template_image, scene_image):
     cv.waitKey(0)
 
     # --------removing the matches that are not in the target area--------
-    
+    # Method 1 of the paper.
+    #  
     # optimization parameters
     threashold_numof_neighbors = 4 # number of neighbors around the point of interest
     width_of_target_area = template.shape[1]/4
     height_of_target_area = template.shape[0]/4
 
+    # array to store the filtered matches
     correct_matches = []
 
+    # iterate over the matches
     for match in good_matches:
-
-        point_of_interest = kp2[match.trainIdx].pt # the point of interest
         
-        num_neighbors = 0 # number of neighbors in the inspection area
+        # the point of interest
+        point_of_interest = kp1[match.queryIdx].pt 
+        
+        # number of neighbors in the inspection area
+        num_neighbors = 0 
+
+        # iterate over the matches again to find the neighbors
         for neighbor in good_matches:
-            neighbor_point = kp2[neighbor.trainIdx].pt # the neighbor point under inspection
+            
+            # the neighbor point under inspection
+            neighbor_point = kp1[neighbor.queryIdx].pt 
 
             # get absolute distance between the two points
             delta_x = abs(neighbor_point[0] - point_of_interest[0])
@@ -74,7 +84,7 @@ def get_matching_keypoints(template_image, scene_image):
                 num_neighbors += 1
 
         # if the number of neighbors is greater than the threashold, add the point to the list
-        if num_neighbors > threashold_numof_neighbors:
+        if num_neighbors >= threashold_numof_neighbors:
             correct_matches.append(match)
     
     print("Number of correct matches:", len(correct_matches))
@@ -96,6 +106,7 @@ def get_matching_keypoints(template_image, scene_image):
     
     return object_points, scene_points
 
+# fucntion to remove the mismatching points: outliers
 def remove_mismatches(object_points, scene_points):
 
     """
@@ -106,11 +117,12 @@ def remove_mismatches(object_points, scene_points):
     by Guangjun Shi, Xiangyang Xu, Yaping Dai
 
     1. Method One: Find the target area and remove the
-feature points not in the target area.
+    feature points not in the target area.
 
-    2. Method Two: Remove the crossing feature points: 
-    this can not be used here as the images may be roatated
-    in extreme degrees.
+    2. Method Two: Remove the crossing feature points: this can not 
+    be used here as the images may be roatated in extreme degrees.
+
+    THE SAME METHOD IS IMPLEMENTED INSIDE THE FUNCTION: get_matching_keypoints()
     """
 
     # Method 1:
@@ -166,9 +178,7 @@ feature points not in the target area.
     print("Number of correct matches: ", correct_matches)
     return filtered_object_points2, filtered_scene_points2
 
-
-        
-
+# function to calculate transformed points
 def get_transformed_grasp_locations(grasp_locations, homography_matrix):
 
     """
