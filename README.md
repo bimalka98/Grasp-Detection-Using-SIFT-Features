@@ -32,4 +32,4 @@ Method 2 explained in the paper is not implemented in this code. Because it is n
 
 <img src="figures/iRANSAC.png" width="700" />
 
-Note: This improved RANSAC algorithm was also not met the requirements of the project. Due to its unreliable behavior on the test images. Sometimes it gave accurate results but sometimes it gave inaccurate results. In addition to that, sometimes the matching points given by it was not enough/ not correct  to determine the homography matrix accurately.
+**Note**: *However, this improved RANSAC algorithm was also not met the requirements of the project due to its unreliable behavior on the test images. Sometimes it gave accurate results but sometimes it gave inaccurate results. In addition to that, sometimes the matching points given by it was not enough/ not correct  to determine the homography matrix accurately.*
