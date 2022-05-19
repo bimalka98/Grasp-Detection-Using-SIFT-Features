@@ -4,6 +4,7 @@ import numpy as np
 from io_helper import * 
 from homography import *
 
+# main fucntion to be executed
 def main(object_class):
 
     # get the template image and the scene images form the directory
@@ -23,9 +24,7 @@ def main(object_class):
 
         # find the homography matrix: https://docs.opencv.org/4.x/d1/de0/tutorial_py_feature_homography.html 
         # cv.findHomography https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780    
-        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC)
-        # homography_matrix, _ = cv.findHomography(filtered_object_points, filtered_scene_points, cv.RHO)
-        # homography_matrix, _ = cv.findHomography(filtered_object_points, filtered_scene_points, cv.LMEDS)
+        homography_matrix, _ = cv.findHomography(object_points, scene_points, cv.RANSAC) # cv.RHO # cv.LMEDS        
         print("Homography Matrix : \n", homography_matrix)
 
         # get the transformed grasp locations on the scene image
@@ -53,7 +52,6 @@ def main(object_class):
             print("Error in finding the transformed grasp locations")
             print("Calculating the centroid of the object...")
             
-
             # use centroid of the scene image as the grasp location
             centroid = get_centroid(scene_image)
             print("Centroid of the template image : ", centroid)
@@ -71,6 +69,7 @@ def main(object_class):
     else:
 
         print("Not enough matching keypoints to calculate homography matrix.")
+        print("Calculating the centroid of the object...")
 
         # use centroid of the scene image as the grasp location
         centroid = get_centroid(scene_image)
@@ -83,7 +82,6 @@ def main(object_class):
         # display the scene image
         cv.imshow('Scene Image - Centroid of the 2D object', scene_image)
         cv.waitKey(0)
-
 
 
 if __name__ == '__main__':

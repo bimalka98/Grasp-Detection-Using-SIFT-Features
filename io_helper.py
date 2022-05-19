@@ -4,7 +4,7 @@ import numpy as np
 
 
 NumberOfGraspPoints = 2 # number of grasp points per object
-global CurrentGraspPoint
+global CurrentGraspPoint    
 CurrentGraspPoint = 0
 
 # mouse callback function to draw the circle when the mouse is clicked
@@ -102,7 +102,7 @@ def get_centroid(scene_image):
     # return the centroid
     return (cx, cy)
 
-    
+# fucntion to calculate mid point of a given two points  
 def get_midpoint(transformed_grasp_locations):
 
     """
