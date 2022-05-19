@@ -14,13 +14,12 @@ def get_matching_keypoints(template_image, scene_image):
     template = cv.cvtColor(template_image.copy(), cv.COLOR_BGR2GRAY)
     scene = cv.cvtColor(scene_image.copy(), cv.COLOR_BGR2GRAY)
 
-    # gaussian blur the images
+    # gaussian blur the images: to remove noice
     template = cv.GaussianBlur(template, (3, 3), 0)
     scene = cv.GaussianBlur(scene, (3, 3), 0)
 
     # detect features using SIFT and compute the descriptors
-    numof_features = 1000
-    sift = cv.SIFT_create(numof_features)
+    sift = cv.SIFT_create()
     kp1, des1 = sift.detectAndCompute(template, None)
     kp2, des2 = sift.detectAndCompute(scene, None)
 
@@ -32,7 +31,7 @@ def get_matching_keypoints(template_image, scene_image):
     matches = flann.knnMatch(des1, des2, k = 2)
 
     # filter matches using the Lowe's ratio test
-    ratio_thresh = 0.8
+    ratio_thresh = 0.85
     good_matches = []
     for m,n in matches:
         if m.distance < ratio_thresh * n.distance:
@@ -49,10 +48,10 @@ def get_matching_keypoints(template_image, scene_image):
     cv.imshow('Good Matches', img_matches)
     cv.waitKey(0)
 
-    # removing the matches that are not in the target area
+    # --------removing the matches that are not in the target area--------
     
     # optimization parameters
-    threashold_numof_neighbors = 3
+    threashold_numof_neighbors = 4 # number of neighbors around the point of interest
     width_of_target_area = template.shape[1]/4
     height_of_target_area = template.shape[0]/4
 
@@ -60,11 +59,11 @@ def get_matching_keypoints(template_image, scene_image):
 
     for match in good_matches:
 
-        point_of_interest = kp1[match.queryIdx].pt # the point of interest: center point of inspection area
+        point_of_interest = kp2[match.trainIdx].pt # the point of interest
         
         num_neighbors = 0 # number of neighbors in the inspection area
         for neighbor in good_matches:
-            neighbor_point = kp1[neighbor.queryIdx].pt # the neighbor point under inspection
+            neighbor_point = kp2[neighbor.trainIdx].pt # the neighbor point under inspection
 
             # get absolute distance between the two points
             delta_x = abs(neighbor_point[0] - point_of_interest[0])
@@ -84,6 +83,8 @@ def get_matching_keypoints(template_image, scene_image):
     correct_feature_matches = cv.drawMatches(template, kp1, scene, kp2, correct_matches, None, flags = 2)
     cv.imshow('Correct Matches', correct_feature_matches)
     cv.waitKey(0)
+
+    # --------------------------------------------------------------------
 
     # get the keypoints from the good matches
     object_points = np.zeros((len(correct_matches), 2), dtype = np.float32)
