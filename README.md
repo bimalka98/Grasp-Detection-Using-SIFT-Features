@@ -29,3 +29,7 @@ Using the method 1 explained in the following paper:
  * ***SIFT Feature Point Matching Based on Improved RANSAC Algorithm*** by Guangjun Shi, Xiangyang Xu, Yaping Dai
 
 Method 2 explained in the paper is not implemented in this code. Because it is not possible to use the method 2 in our scenario where images may be rotated by a large angle. Therefore, cross points are a natural thing in our case.
+
+<img src="figures/iRANSAC.png" width="700" />
+
+Note: This improved RANSAC algorithm was also not met the requirements of the project. Due to its unreliable behavior on the test images. Sometimes it gave accurate results but sometimes it gave inaccurate results. In addition to that, sometimes the matching points given by it was not enough/ not correct  to determine the homography matrix accurately.
