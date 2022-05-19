@@ -1,3 +1,4 @@
+from turtle import width
 import cv2 as cv
 import numpy as np
 
@@ -31,13 +32,13 @@ def get_matching_keypoints(template_image, scene_image):
     matches = flann.knnMatch(des1, des2, k = 2)
 
     # filter matches using the Lowe's ratio test
-    ratio_thresh = 0.9
+    ratio_thresh = 0.8
     good_matches = []
     for m,n in matches:
         if m.distance < ratio_thresh * n.distance:
             good_matches.append(m)
     
-    # print(good_matches)
+    print("Number of matches:", len(good_matches))
     # sort the matches based on the distance
     good_matches = sorted(good_matches, key = lambda x:x.distance)
 
@@ -48,14 +49,50 @@ def get_matching_keypoints(template_image, scene_image):
     cv.imshow('Good Matches', img_matches)
     cv.waitKey(0)
 
+    # removing the matches that are not in the target area
+    
+    # optimization parameters
+    threashold_numof_neighbors = 3
+    width_of_target_area = template.shape[1]/4
+    height_of_target_area = template.shape[0]/4
+
+    correct_matches = []
+
+    for match in good_matches:
+
+        point_of_interest = kp1[match.queryIdx].pt # the point of interest: center point of inspection area
+        
+        num_neighbors = 0 # number of neighbors in the inspection area
+        for neighbor in good_matches:
+            neighbor_point = kp1[neighbor.queryIdx].pt # the neighbor point under inspection
+
+            # get absolute distance between the two points
+            delta_x = abs(neighbor_point[0] - point_of_interest[0])
+            delta_y = abs(neighbor_point[1] - point_of_interest[1])
+
+            # if the distance is less than the inspection area, add the point to the list
+            if delta_x < width_of_target_area and delta_y < height_of_target_area:
+                num_neighbors += 1
+
+        # if the number of neighbors is greater than the threashold, add the point to the list
+        if num_neighbors > threashold_numof_neighbors:
+            correct_matches.append(match)
+    
+    print("Number of correct matches:", len(correct_matches))
+
+    # draw the correct matches
+    correct_feature_matches = cv.drawMatches(template, kp1, scene, kp2, correct_matches, None, flags = 2)
+    cv.imshow('Correct Matches', correct_feature_matches)
+    cv.waitKey(0)
+
     # get the keypoints from the good matches
-    object_points = np.zeros((len(good_matches), 2), dtype = np.float32)
-    scene_points = np.zeros((len(good_matches), 2), dtype = np.float32)
-    for i, match in enumerate(good_matches):
+    object_points = np.zeros((len(correct_matches), 2), dtype = np.float32)
+    scene_points = np.zeros((len(correct_matches), 2), dtype = np.float32)
+    for i, match in enumerate(correct_matches):
         object_points[i, :] = kp1[match.queryIdx].pt
         scene_points[i, :] = kp2[match.trainIdx].pt
 
-    print("Number of matches: ", len(good_matches))
+    
     return object_points, scene_points
 
 def remove_mismatches(object_points, scene_points):
@@ -89,7 +126,7 @@ feature points not in the target area.
     filtered_scene_points = []
 
     # set the threshold value
-    threshold = 4 # number of matching neighbors around the point of interest
+    threshold = 3 # number of matching neighbors around the point of interest
 
     # set the width and height of the target area
     width = 60 # width of the target area in pixels
@@ -111,8 +148,8 @@ feature points not in the target area.
             if delta_x < width/2 and delta_y < height/2:
                 num_neighbors += 1
             
-        # if the number of matching neighbors is less than the threshold value,
-        # the point is not in the target area
+        # if the number of matching neighbors is greater than the threshold value,
+        # the point is in the target area
         if num_neighbors >= threshold:
             correct_matches += 1
             filtered_object_points.append(object_point)
@@ -127,6 +164,9 @@ feature points not in the target area.
     
     print("Number of correct matches: ", correct_matches)
     return filtered_object_points2, filtered_scene_points2
+
+
+        
 
 def get_transformed_grasp_locations(grasp_locations, homography_matrix):
 
