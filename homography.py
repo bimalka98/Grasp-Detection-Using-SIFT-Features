@@ -53,9 +53,9 @@ def get_matching_keypoints(template_image, scene_image):
     # Method 1 of the paper.
     #  
     # optimization parameters
-    threashold_numof_neighbors = 4 # number of neighbors around the point of interest
-    width_of_target_area = template.shape[1]/4
-    height_of_target_area = template.shape[0]/4
+    threashold_numof_neighbors = 3 # number of neighbors around the point of interest
+    width_of_target_area = template.shape[1]
+    height_of_target_area = template.shape[0]
 
     # array to store the filtered matches
     correct_matches = []
@@ -64,7 +64,7 @@ def get_matching_keypoints(template_image, scene_image):
     for match in good_matches:
         
         # the point of interest
-        point_of_interest = kp1[match.queryIdx].pt 
+        point_of_interest = kp2[match.trainIdx].pt 
         
         # number of neighbors in the inspection area
         num_neighbors = 0 
@@ -73,7 +73,7 @@ def get_matching_keypoints(template_image, scene_image):
         for neighbor in good_matches:
             
             # the neighbor point under inspection
-            neighbor_point = kp1[neighbor.queryIdx].pt 
+            neighbor_point = kp2[neighbor.trainIdx].pt 
 
             # get absolute distance between the two points
             delta_x = abs(neighbor_point[0] - point_of_interest[0])
