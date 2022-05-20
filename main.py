@@ -94,3 +94,6 @@ if __name__ == '__main__':
 
     # execute the main fucntion     
     main(input("Enter the object class : ").strip())
+    
+    # destroy all the windows
+    cv.destroyAllWindows()

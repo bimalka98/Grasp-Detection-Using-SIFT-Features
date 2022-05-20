@@ -14,9 +14,9 @@ def get_matching_keypoints(template_image, scene_image):
     template = cv.cvtColor(template_image.copy(), cv.COLOR_BGR2GRAY)
     scene = cv.cvtColor(scene_image.copy(), cv.COLOR_BGR2GRAY)
 
-    # gaussian blur the images: to remove noice
-    template = cv.GaussianBlur(template, (3, 3), 0)
-    scene = cv.GaussianBlur(scene, (3, 3), 0)
+    # bilateral filter the images
+    template = cv.bilateralFilter(template, 9, 10, 6)
+    scene = cv.bilateralFilter(scene, 9, 10, 6)
 
     # detect features using SIFT and compute the descriptors
     sift = cv.SIFT_create()
