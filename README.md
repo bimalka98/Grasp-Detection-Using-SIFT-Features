@@ -1,13 +1,18 @@
 # Grasp-Detection 🌱
 
-Detecting grasp point of an object by matching it with a template image using SIFT features
-
 - Inspired by the paper : [***Grasp Detection under Occlusions Using SIFT Features***](https://www.hindawi.com/journals/complexity/2021/7619794/)
 - Tested on:
     * *OpenCV version :  4.5.2*
     * *Numpy version :  1.20.2*
 
-## RANSAC Algorithm performs poorly when there are large number of outliers
+## ⭐ Procedure 
+1. Get the 2 grasp points (for a parallel plate gripper) from the user as two mouse clicked points on the template image.
+2. Extract all the matching SIFT features from the template and the scene image.
+3. Filter out incorrect matches using the method 1 explained in the paper mentioned below (*SIFT Feature Point Matching Based on Improved RANSAC Algorithm*).
+4. Calculate the homography transformation matrix using the correctly matched point correspondances.
+5. Transform two grasp points on template image on to the scene image.
+
+## ⭐ RANSAC Algorithm performs poorly when there are large number of outliers
 
 ```
 Homography Matrix :
@@ -22,7 +27,7 @@ Transformed Grasp Locations :
 
 <img src="figures/RANSAC.png" width="700" />
 
-## Improve performance of the RANSAC
+## ⭐ Improve performance of the RANSAC
 
 Using the method 1 explained in the following paper:
 
